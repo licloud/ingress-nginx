@@ -10,6 +10,9 @@ git checkout loong64-controller-v1.1.0
 使用mod管理包的方式进行编译：
 
 ```c
+go env -w GOPROXY=https://goproxy.cn,direct
+go env -w GO111MODULE=on
+go env -w GOSUMDB=off
 
 git status
 
