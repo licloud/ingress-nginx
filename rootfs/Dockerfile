@@ -33,11 +33,7 @@ LABEL build_id="${BUILD_ID}"
 
 WORKDIR  /etc/nginx
 
-RUN apk update \
-  && apk upgrade \
-  && apk add --no-cache \
-    diffutils \
-  && rm -rf /var/cache/apk/*
+RUN apt update || apt update
 
 COPY --chown=www-data:www-data etc /etc
 
@@ -60,14 +56,14 @@ RUN bash -xeu -c ' \
     chown -R www-data.www-data ${dir}; \
   done'
 
-RUN apk add --no-cache libcap \
+RUN apt install libcap2 libcap2-bin dumb-init -y \
   && setcap    cap_net_bind_service=+ep /nginx-ingress-controller \
   && setcap -v cap_net_bind_service=+ep /nginx-ingress-controller \
-  && setcap    cap_net_bind_service=+ep /usr/local/nginx/sbin/nginx \
-  && setcap -v cap_net_bind_service=+ep /usr/local/nginx/sbin/nginx \
+  && setcap    cap_net_bind_service=+ep /usr/sbin/nginx \
+  && setcap -v cap_net_bind_service=+ep /usr/sbin/nginx \
   && setcap    cap_net_bind_service=+ep /usr/bin/dumb-init \
   && setcap -v cap_net_bind_service=+ep /usr/bin/dumb-init \
-  && apk del libcap
+  && apt remove libcap2 libcap2-dev -y
 
 USER www-data
 
